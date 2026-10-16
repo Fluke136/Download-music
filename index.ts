@@ -25,7 +25,7 @@ const app = new Elysia()
     const targetFormat = format === 'mp4' ? 'mp4' : 'mp3';
 
     try {
-      const { stdout: titleOutput } = await execAsync(`yt-dlp --print title "${url}"`);
+      const { stdout: titleOutput } = await execAsync(`yt-dlp --extractor-args "youtube:player_client=android" --print title "${url}"`);
       const safeTitle = titleOutput.trim().replace(/[\\/:*?"<>|]/g, "_").substring(0, 80);
       
       const tempFilename = `${Date.now()}.${targetFormat}`;
