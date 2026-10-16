@@ -33,22 +33,20 @@ const app = new Elysia()
       
       let command = '';
       if (targetFormat === 'mp4') {
-        // กำหนดคุณภาพตามที่เลือก
         let formatStr = '';
         if (quality === 'best') {
-          // ชัดสุดเท่าที่มี (4K/8K)
           formatStr = '"bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"';
         } else if (quality === 'worst') {
-          // ภาพต่ำสุด (แต่ใช้เสียงดีสุดเท่าที่ทำได้ในรูปแบบที่เข้ากัน)
           formatStr = '"worstvideo[ext=mp4]+bestaudio[ext=m4a]/worst[ext=mp4]/worst"';
         } else {
-          // auto (แนะนำ): สูงสุดไม่เกิน 1080p
           formatStr = '"bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"';
         }
         
-        command = `yt-dlp -f ${formatStr} --merge-output-format mp4 --embed-thumbnail --add-metadata --parse-metadata "NA:description" -o "${outputFilename}" "${url}"`;
+        // เติม --extractor-args เข้าไป
+        command = `yt-dlp --extractor-args "youtube:player_client=android" -f ${formatStr} --merge-output-format mp4 --embed-thumbnail --add-metadata --parse-metadata "NA:description" -o "${outputFilename}" "${url}"`;
       } else {
-        command = `yt-dlp -x --audio-format mp3 --embed-thumbnail --convert-thumbnails jpg --add-metadata --parse-metadata "NA:description" -o "${outputFilename}" "${url}"`;
+        // เติม --extractor-args เข้าไป
+        command = `yt-dlp --extractor-args "youtube:player_client=android" -x --audio-format mp3 --embed-thumbnail --convert-thumbnails jpg --add-metadata --parse-metadata "NA:description" -o "${outputFilename}" "${url}"`;
       }
 
       await execAsync(command);
