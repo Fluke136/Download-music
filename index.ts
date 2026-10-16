@@ -60,6 +60,7 @@ const app = new Elysia()
       };
       
     } catch (error) {
+      console.error("🚨 YTDLP ERROR:", error); // <--- เพิ่มบรรทัดนี้เข้าไปครับ
       set.status = 500;
       return { error: 'เกิดข้อผิดพลาดในการดาวน์โหลด' };
     }
