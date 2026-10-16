@@ -59,10 +59,10 @@ const app = new Elysia()
         title: safeTitle 
       };
       
-    } catch (error) {
-      console.error("🚨 YTDLP ERROR:", error); // <--- เพิ่มบรรทัดนี้เข้าไปครับ
-      set.status = 500;
-      return { error: 'เกิดข้อผิดพลาดในการดาวน์โหลด' };
+    } catch (error: any) {
+      console.error("🚨 YTDLP ERROR:", error?.message || error);
+      set.status = 400; 
+      return { error: `ขัดข้องทางเทคนิค: ${error?.message || 'ไม่สามารถแปลงไฟล์ได้'}` };
     }
   }, {
     body: t.Object({ 
