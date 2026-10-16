@@ -25,7 +25,7 @@ const app = new Elysia()
     const targetFormat = format === 'mp4' ? 'mp4' : 'mp3';
 
     try {
-      const { stdout: titleOutput } = await execAsync(`yt-dlp --extractor-args "youtube:player_client=android" --print title "${url}"`);
+      const { stdout: titleOutput } = await execAsync(`yt-dlp --print title "${url}"`);
       const safeTitle = titleOutput.trim().replace(/[\\/:*?"<>|]/g, "_").substring(0, 80);
       
       const tempFilename = `${Date.now()}.${targetFormat}`;
@@ -33,20 +33,22 @@ const app = new Elysia()
       
       let command = '';
       if (targetFormat === 'mp4') {
+        // กำหนดคุณภาพตามที่เลือก
         let formatStr = '';
         if (quality === 'best') {
+          // ชัดสุดเท่าที่มี (4K/8K)
           formatStr = '"bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"';
         } else if (quality === 'worst') {
+          // ภาพต่ำสุด (แต่ใช้เสียงดีสุดเท่าที่ทำได้ในรูปแบบที่เข้ากัน)
           formatStr = '"worstvideo[ext=mp4]+bestaudio[ext=m4a]/worst[ext=mp4]/worst"';
         } else {
+          // auto (แนะนำ): สูงสุดไม่เกิน 1080p
           formatStr = '"bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"';
         }
         
-        // เติม --extractor-args เข้าไป
-        command = `yt-dlp --extractor-args "youtube:player_client=android" -f ${formatStr} --merge-output-format mp4 --embed-thumbnail --add-metadata --parse-metadata "NA:description" -o "${outputFilename}" "${url}"`;
+        command = `yt-dlp -f ${formatStr} --merge-output-format mp4 --embed-thumbnail --add-metadata --parse-metadata "NA:description" -o "${outputFilename}" "${url}"`;
       } else {
-        // เติม --extractor-args เข้าไป
-        command = `yt-dlp --extractor-args "youtube:player_client=android" -x --audio-format mp3 --embed-thumbnail --convert-thumbnails jpg --add-metadata --parse-metadata "NA:description" -o "${outputFilename}" "${url}"`;
+        command = `yt-dlp -x --audio-format mp3 --embed-thumbnail --convert-thumbnails jpg --add-metadata --parse-metadata "NA:description" -o "${outputFilename}" "${url}"`;
       }
 
       await execAsync(command);
@@ -57,10 +59,9 @@ const app = new Elysia()
         title: safeTitle 
       };
       
-    } catch (error: any) {
-      console.error("🚨 YTDLP ERROR:", error?.message || error);
-      set.status = 400; 
-      return { error: `ขัดข้องทางเทคนิค: ${error?.message || 'ไม่สามารถแปลงไฟล์ได้'}` };
+    } catch (error) {
+      set.status = 500;
+      return { error: 'เกิดข้อผิดพลาดในการดาวน์โหลด' };
     }
   }, {
     body: t.Object({ 
@@ -93,7 +94,6 @@ const app = new Elysia()
 
     return file;
   })
-  const port = process.env.PORT || 3000;
-  app.listen(port);
+  .listen(3000);
 
-console.log(`🦊 Server running at port ${port}`);
+console.log('🦊 Server running at http://localhost:3000');
