@@ -14,7 +14,7 @@ RUN chmod a+rx /usr/local/bin/yt-dlp
 RUN pip3 install mutagen --break-system-packages || pip3 install mutagen
 
 # ก๊อปปี้ไฟล์โค้ดและติดตั้ง dependencies
-COPY package.json bun.lockb ./
+COPY package.json ./
 RUN bun install
 
 # ก๊อปปี้ไฟล์ทั้งหมดไปไว้ในเซิร์ฟเวอร์
