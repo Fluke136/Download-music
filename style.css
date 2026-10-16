@@ -1,0 +1,134 @@
+        * {
+            box-sizing: border-box;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        body { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0; 
+            /* พื้นหลังไล่สีสไตล์โมเดิร์น */
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .container {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        /* ตกแต่งคำว่า YouTube เป็นสีแดง */
+        h2 span {
+            color: #ff0000;
+        }
+
+        input { 
+            width: 100%; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            border: 2px solid #e1e1e1; 
+            border-radius: 12px; 
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #007bff;
+        }
+
+        button.btn-main { 
+            width: 100%;
+            padding: 15px; 
+            cursor: pointer; 
+            /* ปุ่มแบบไล่สีสไตล์ YouTube/Music */
+            background: linear-gradient(45deg, #ff416c, #ff4b2b); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3);
+        }
+
+        button.btn-main:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 75, 43, 0.4);
+        }
+
+        button.btn-main:disabled {
+            background: #cbd5e1;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #status { 
+            margin-top: 25px; 
+            text-align: center; 
+            font-size: 15px;
+            color: #555;
+            min-height: 50px;
+        }
+
+        /* ตกแต่งปุ่มดาวน์โหลดความสำเร็จ */
+        .success-btn {
+            text-decoration: none; 
+            padding: 12px 20px; 
+            background: #10b981; 
+            color: white; 
+            border-radius: 10px; 
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            width: 100%;
+            transition: background 0.3s;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+        }
+
+        .success-btn:hover {
+            background: #059669;
+        }
+
+        .warning-text {
+            color: #ef4444; 
+            font-size: 13px; 
+            margin-top: 15px;
+            background: #fef2f2;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        /* แอนิเมชันโหลด */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #007bff;
+            animation: spin 1s ease-in-out infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+ 

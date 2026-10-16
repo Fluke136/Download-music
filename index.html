@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>ดาวน์โหลด <span>YouTube</span></h2>
+        <input type="text" id="urlInput" placeholder="วางลิงก์ YouTube ที่นี่... (เช่น https://youtu.be/...)">
+        
+        <!-- ช่องเลือกประเภทไฟล์ -->
+        <select id="formatSelect" style="width: 100%; padding: 15px; margin-bottom: 15px; border: 2px solid #e1e1e1; border-radius: 12px; font-size: 16px; outline: none; font-family: 'Prompt', sans-serif;">
+            <option value="mp3">🎵 เสียงอย่างเดียว (MP3)</option>
+            <option value="mp4">🎬 วิดีโอพร้อมเสียง (MP4)</option>
+        </select>
+
+        <!-- ช่องเลือกคุณภาพ (แสดงเฉพาะตอนเลือก MP4) -->
+        <select id="qualitySelect" style="display: none; width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #e1e1e1; border-radius: 12px; font-size: 16px; outline: none; font-family: 'Prompt', sans-serif;">
+            <option value="auto">🌟 ระบบเลือกให้ (แนะนำ - สวยและไว)</option>
+            <option value="best">🔥 ดีที่สุด (ชัดสุดเท่าที่มี 4K/8K)</option>
+            <option value="worst">⬇️ ต่ำสุด (ประหยัดพื้นที่/เน็ต)</option>
+        </select>
+        
+        <button class="btn-main" onclick="downloadMedia()">แปลงไฟล์เลย!</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        // โค้ดสำหรับโชว์/ซ่อน ตัวเลือกคุณภาพวิดีโอ
+        document.getElementById('formatSelect').addEventListener('change', function() {
+            const qualitySelect = document.getElementById('qualitySelect');
+            if (this.value === 'mp4') {
+                qualitySelect.style.display = 'block'; // แสดง
+            } else {
+                qualitySelect.style.display = 'none'; // ซ่อน
+            }
+        });
+
+        async function downloadMedia() {
+            const urlInput = document.getElementById('urlInput');
+            const url = urlInput.value.trim();
+            const format = document.getElementById('formatSelect').value;
+            const quality = document.getElementById('qualitySelect').value; // ดึงค่าคุณภาพ
+            const statusEl = document.getElementById('status');
+            const btn = document.querySelector('.btn-main'); 
+            
+            if (!url) {
+                alert('กรุณาใส่ลิงก์ YouTube ก่อนครับ');
+                urlInput.focus();
+                return;
+            }
+            
+            btn.disabled = true;
+            statusEl.innerHTML = '<div class="spinner"></div> กำลังดาวน์โหลดและแปลงไฟล์... (อาจใช้เวลาสักครู่)';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/download', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    // ส่งข้อมูล format และ quality ไปให้ backend
+                    body: JSON.stringify({ url, format, quality })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const downloadUrl = `http://localhost:3000/api/file/${data.filename}?title=${encodeURIComponent(data.title)}`;
+                    const icon = format === 'mp4' ? '🎬' : '🎵';
+                    
+                    statusEl.innerHTML = `
+                        <a href="${downloadUrl}" class="success-btn">
+                           ${icon} คลิกที่นี่เพื่อบันทึกไฟล์: ${data.title}
+                        </a>
+                        <div class="warning-text">
+                           ⚠️ กรุณากดดาวน์โหลดภายใน 1 นาที ก่อนไฟล์จะถูกลบออกจากระบบ
+                        </div>
+                    `;
+                    urlInput.value = ''; 
+                } else {
+                    statusEl.innerHTML = `<span style="color: red;">❌ ผิดพลาด: ${data.error}</span>`;
+                }
+            } catch (error) {
+                statusEl.innerHTML = '<span style="color: red;">❌ ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้</span>';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+    </script>
+
+</body>
+</html>
