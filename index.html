@@ -59,7 +59,7 @@
             statusEl.innerHTML = '<div class="spinner"></div> กำลังดาวน์โหลดและแปลงไฟล์... (อาจใช้เวลาสักครู่)';
             
             try {
-                const response = await fetch('https://download-music-9znb.onrender.com', {
+                const response = await fetch('https://download-music-9znb.onrender.com/api/download', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     // ส่งข้อมูล format และ quality ไปให้ backend
