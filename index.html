@@ -69,15 +69,16 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    const downloadUrl = `http://localhost:3000/api/file/${data.filename}?title=${encodeURIComponent(data.title)}`;
+                    const downloadUrl = data.downloadUrl; // ดึงลิงก์จากระบบ Static ตรงๆ
                     const icon = format === 'mp4' ? '🎬' : '🎵';
+                    const fileExt = format === 'mp4' ? 'mp4' : 'mp3';
                     
                     statusEl.innerHTML = `
-                        <a href="${downloadUrl}" class="success-btn">
+                        <a href="${downloadUrl}" class="success-btn" download="${data.title}.${fileExt}">
                            ${icon} คลิกที่นี่เพื่อบันทึกไฟล์: ${data.title}
                         </a>
                         <div class="warning-text">
-                           ⚠️ กรุณากดดาวน์โหลดภายใน 1 นาที ก่อนไฟล์จะถูกลบออกจากระบบ
+                           ⚠️ ไฟล์พร้อมดาวน์โหลดแล้ว! (ระบบจะล้างไฟล์ขยะอัตโนมัติใน 1 นาที)
                         </div>
                     `;
                     urlInput.value = ''; 
