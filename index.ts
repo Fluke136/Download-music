@@ -75,7 +75,7 @@ const app = new Elysia()
     const ext = params.filename.split('.').pop() || 'mp3';
     const encodedTitle = encodeURIComponent(`${title}.${ext}`);
     
-    // ยืดเวลาลบไฟล์ขยะเป็น 10 นาที ป้องกันไฟล์โดนลบตอนยังโหลดลงเครื่องไม่เสร็จ
+    // ยืดเวลาลบไฟล์ขยะเป็น 1 นาที ป้องกันไฟล์โดนลบตอนยังโหลดลงเครื่องไม่เสร็จ
     setTimeout(async () => {
       try {
         if (existsSync(filePath)) {
@@ -83,7 +83,7 @@ const app = new Elysia()
           console.log(`ลบไฟล์เรียบร้อย: ${filePath}`);
         }
       } catch (err) { }
-    }, 120000); // 120000 ms = 2 นาที
+    }, 60000); // 60000 ms = 1 นาที
 
     // แก้ไขการบังคับดาวน์โหลดให้ชัวร์ 100% โดยใช้ new Response ยัด Header
     return new Response(file, {
